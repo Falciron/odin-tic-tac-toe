@@ -1,3 +1,4 @@
+# Copyright (c) 2026 Aaron Mattson
 # frozen_string_literal: true
 
 require_relative 'player'
@@ -44,7 +45,7 @@ class Game
   def elicit_user_entry
     puts(
       "#{@current_player.name}, which space do you want to fill with an #{@current_player.mark}? " \
-      'Enter R to restart.'
+      '(Enter R to restart.)'
     )
     gets.chomp
   end
