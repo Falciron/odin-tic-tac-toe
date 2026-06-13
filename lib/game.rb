@@ -13,14 +13,14 @@ class Game
   end
 
   # Initializes the pair of players with their names and marks.
-  def establish_players
+  def establish_players(player_class = ::Player)
     @players = []
-    puts("What is player one's name?")
-    @players << ::Player.new('X', gets.chomp)
-    puts("What is player two's name?")
-    @players << ::Player.new('O', gets.chomp)
-    puts("#{@players.first.name} vs. #{@players.last.name}")
+    %w[X O].each do |symbol|
+      puts("What is player one's name?")
+      @players << player_class.new(symbol, $stdin.gets.chomp)
+    end
     @current_player = @players.first
+    puts("#{@players.first.name} vs. #{@players.last.name}")
   end
 
   # Plays out the game, taking turns between each player, until the game is over.
@@ -28,10 +28,10 @@ class Game
     @board.display_board
     loop do
       user_entry = elicit_user_entry
-      break if user_entry == 'R'
+      return false if user_entry == 'R'
 
       redo unless process_entry?(user_entry)
-      break if game_over?
+      return true if game_over?
 
       swap_current_player
       @board.display_board
@@ -45,7 +45,7 @@ class Game
       "#{@current_player.name}, which space do you want to fill with an #{@current_player.mark}? " \
       '(Enter R to restart.)'
     )
-    gets.chomp
+    $stdin.gets.chomp
   end
 
   def process_entry?(user_entry)
