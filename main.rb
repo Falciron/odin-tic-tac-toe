@@ -5,7 +5,9 @@ require_relative 'lib/board'
 require_relative 'lib/game'
 
 loop do
-  ::Game.new
+  current_game = ::Game.new
+  current_game.establish_players
+  current_game.play_game
   puts('Press Enter to continue or press Ctrl+C to quit.')
   gets
 rescue ::Interrupt

@@ -10,14 +10,14 @@ class Board
   INVALID_SQUARE_MESSAGE = 'That is an invalid square number. Please enter a single digit among 0-8 or R.'
   public_constant :INVALID_SQUARE_MESSAGE
 
-  def initialize
+  def initialize(square_class = ::Square)
     @squares = []
     @lines = []
     @rows = [[], [], []]
     @columns = [[], [], []]
     @diagonals = [[], []]
     9.times do |number|
-      build_square(number)
+      build_square(square_class, number)
     end
     @lines += @rows + @columns + @diagonals
   end
@@ -42,8 +42,8 @@ class Board
   end
 
   # Fills in a square with a player's mark.
-  def fill_square(user_entry, mark)
-    @squares[Integer(user_entry, 10)].contents = mark
+  def fill_square(square_number, mark)
+    @squares[square_number].contents = mark
   end
 
   # Identifies if all the squares of the board have been filled.
@@ -53,8 +53,8 @@ class Board
 
   private
 
-  def build_square(number)
-    new_square = ::Square.new(number)
+  def build_square(square_class, number)
+    new_square = square_class.new(number)
     @squares << new_square
     @rows[number % 3] << new_square
     @columns[number / 3] << new_square
@@ -72,7 +72,7 @@ class Board
   end
 
   def unmarked_square?(square_number)
-    if %w[X O].include?(@squares[square_number].contents)
+    if @squares[square_number].filled?
       puts("Square number #{square_number} was already marked. Please select another square.")
       false
     else

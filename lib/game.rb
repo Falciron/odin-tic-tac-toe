@@ -1,33 +1,29 @@
 # Copyright (c) 2026 Aaron Mattson
 # frozen_string_literal: true
 
+require_relative 'board'
 require_relative 'player'
 
 # Represents a single game of tic-tac-toe.
 class Game
   attr_reader :current_player, :players
 
-  def initialize
-    @players = []
-    @board = ::Board.new
-
-    establish_players
-    @current_player = @players.first
-
-    play_game
+  def initialize(board = ::Board.new)
+    @board = board
   end
-
-  private
 
   # Initializes the pair of players with their names and marks.
   def establish_players
+    @players = []
     puts("What is player one's name?")
     @players << ::Player.new('X', gets.chomp)
     puts("What is player two's name?")
     @players << ::Player.new('O', gets.chomp)
     puts("#{@players.first.name} vs. #{@players.last.name}")
+    @current_player = @players.first
   end
 
+  # Plays out the game, taking turns between each player, until the game is over.
   def play_game
     @board.display_board
     loop do
@@ -42,6 +38,8 @@ class Game
     end
   end
 
+  private
+
   def elicit_user_entry
     puts(
       "#{@current_player.name}, which space do you want to fill with an #{@current_player.mark}? " \
@@ -51,10 +49,9 @@ class Game
   end
 
   def process_entry?(user_entry)
-    valid_square = @board.can_fill_square?(user_entry)
-    return false unless valid_square
+    return false unless @board.can_fill_square?(user_entry)
 
-    @board.fill_square(user_entry, @current_player.mark)
+    @board.fill_square(Integer(user_entry, 10), @current_player.mark)
     true
   end
 
